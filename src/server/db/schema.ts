@@ -24,7 +24,7 @@ import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 
-export const createTable = pgTableCreator((name) => ` ${name}`);
+export const createTable = pgTableCreator((name) => `project_manager_${name}`);
 
 export const UserRoles = pgEnum("UserRoles", ["admin", "user"]);
 
@@ -45,7 +45,9 @@ export const userTable = pgTable(
   },
 );
 
-export const sessionTable = pgTable('session', {
+export const sessionTable = pgTable(
+  "session", 
+  {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => userTable.id),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
@@ -65,7 +67,7 @@ export const posts = createTable(
     nameIndex: index("name_idx").on(example.name),
   })
 );
-
+/**
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
-export default adapter;
+export default adapter; */
