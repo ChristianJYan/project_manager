@@ -46,7 +46,9 @@ export default async function Home() {
 
         <CrudShowcase />
         <div className="fixed top-0 right-0 p-4">
-          <Button children="Sign Up" path="/pages/sign-up" className="text-blue-500" />
+        <Button path="/pages/sign-up" className="text-blue-500">
+          Sign Up
+        </Button>
         </div>
 
       </div>
