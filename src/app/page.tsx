@@ -46,7 +46,7 @@ export default async function Home() {
 
         <CrudShowcase />
         <div className="fixed top-0 right-0 p-4">
-          <Button children="Sign In" path="src/app/pages/sign-in.tsx" className="text-blue-500" />
+          <Button children="Sign Up" path="/pages/sign-up" className="text-blue-500" />
         </div>
 
       </div>
