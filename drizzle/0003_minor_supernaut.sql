@@ -1,0 +1,1 @@
+ALTER TABLE " post" RENAME TO "project_manager_post";
