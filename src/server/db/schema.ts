@@ -14,8 +14,6 @@ import {
   text,
 } from "drizzle-orm/pg-core";
 
-import { db } from "./index"
-import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -28,13 +26,17 @@ export const createTable = pgTableCreator((name) => `project_manager_${name}`);
 
 export const UserRoles = pgEnum("UserRoles", ["admin", "user"]);
 
+// First table for the user
+// maybe move some stuff to a different table? 
 export const userTable = pgTable(
-  "user",
+  "project_manager_user",
   {
     id: text("id").primaryKey(),
     name: varchar("name", { length: 128 }),
     email: varchar("email", { length: 32 }).unique(),
+    username: varchar("user_agent", { length: 128 }).unique(),
     password: varchar("password", { length: 32 }),
+    password_hash: varchar("password_hash", { length: 128 }),
     googleId: varchar("google_id", { length: 256 }),
     role: UserRoles("role").notNull().default("user"),
     //maybe have a different table for more scpeficic details about the user
@@ -45,14 +47,17 @@ export const userTable = pgTable(
   },
 );
 
+// session table
 export const sessionTable = pgTable(
-  "session", 
+  "project_manager_session", 
   {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => userTable.id),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
 });
 
+
+// Original table from the template project
 export const posts = createTable(
   "post",
   {
@@ -67,7 +72,10 @@ export const posts = createTable(
     nameIndex: index("name_idx").on(example.name),
   })
 );
-/**
-const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
-export default adapter; */
+// 
+export interface DatabaseUser {
+	id: string;
+	username: string;
+	password_hash: string;
+}

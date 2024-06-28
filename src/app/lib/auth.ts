@@ -1,7 +1,10 @@
 // src/auth.ts
-/**import { Lucia } from "lucia";
-import adapter from "~/server/db/schema";
+import { Lucia } from "lucia";
+import adapter from "~/server/db";
 
+interface DatabaseUserAttributes {
+	username: string;
+}
 
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {
@@ -12,6 +15,12 @@ export const lucia = new Lucia(adapter, {
 			// set to `true` when using HTTPS
 			secure: process.env.NODE_ENV === "production"
 		}
+	},
+	getUserAttributes: (attributes) => {
+		return {
+			// attributes has the type of DatabaseUserAttributes
+			username: attributes.username
+		};
 	}
 });
 
@@ -19,5 +28,6 @@ export const lucia = new Lucia(adapter, {
 declare module "lucia" {
 	interface Register {
 		Lucia: typeof lucia;
+		DatabaseUserAttributes: DatabaseUserAttributes;
 	}
-} **/
+}
