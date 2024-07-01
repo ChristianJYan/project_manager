@@ -2,6 +2,9 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { userTable, sessionTable, posts } from "./schema"; // Import tables
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
+import { z } from "zod";
+
+
 
 // used to manage multiple db servers
 const pool = new Pool({
