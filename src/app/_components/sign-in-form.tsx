@@ -1,41 +1,41 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { z } from "zod";
-import { signUpSchema } from "~/app/Types/types";
+import { signInSchema } from "~/app/Types/types";
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { RegisterUser } from "../actions/auth.actions";
+import { SignInUser } from "../actions/auth.actions";
 
-export function SignUp() {
+export function SignIn() {
   // These are the states for the form and errors
   const router = useRouter();
   const [formError, setErrors] = useState<string[]>([]);
 
-  const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<z.infer<typeof signUpSchema>>({
-    resolver: zodResolver(signUpSchema),
+  const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       username: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    console.log(data);
       try{
-      const res = await RegisterUser(data);
+      const res = await SignInUser(data);
 
       if (res.error) {
         // Assuming res.error is a string array
         setErrors([res.error]);
       } else if (res.success) {
-        console.log("Account Created");
+        console.log("Signed In");
         router.push("/");
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error("Error during signin:", error);
       setErrors(["An unexpected error occurred."]);
     }
   };
@@ -62,20 +62,6 @@ export function SignUp() {
           />
         )}
       />
-      {/* Email input field
-      <Controller
-        name="email"
-        control={control}
-        render={({ field }) => (
-          <input
-            {...field}
-            type="email"
-            placeholder="Email"
-            className="w-full rounded-full px-4 py-2 text-black"
-          />
-        )}
-      /> */}
-      {/* Password input field */}
       <Controller
         name="password"
         control={control}
@@ -84,19 +70,6 @@ export function SignUp() {
             {...field}
             type="password"
             placeholder="Password"
-            className="w-full rounded-full px-4 py-2 text-black"
-          />
-        )}
-      />
-      {/* Confirm Password input field */}
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field }) => (
-          <input
-            {...field}
-            type="password"
-            placeholder="Confirm Password"
             className="w-full rounded-full px-4 py-2 text-black"
           />
         )}

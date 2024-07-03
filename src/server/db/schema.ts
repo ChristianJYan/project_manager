@@ -37,7 +37,6 @@ export const userTable = pgTable(
     username: varchar("user_agent", { length: 128 }).unique(),
     password: varchar("password", { length: 32 }),
     password_hash: varchar("password_hash", { length: 128 }),
-    googleId: varchar("google_id", { length: 256 }),
     role: UserRoles("role").notNull().default("user"),
     //maybe have a different table for more scpeficic details about the user
     createdAt: timestamp("created_at", { withTimezone: true })
