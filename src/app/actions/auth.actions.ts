@@ -13,6 +13,7 @@ import { generateIdFromEntropySize } from "lucia";
 import { cache } from "react";
 import type { Session, User } from "lucia";
 import { eq } from "drizzle-orm";
+import { DatabaseError } from "pg";
 
 export const validateRequest = cache(
   async (): Promise<{ user: User | null; session: Session | null }> => {
@@ -24,13 +25,13 @@ export const validateRequest = cache(
     const result = await lucia.validateSession(sessionId);
   
     try {
-    if (result.session && result.session.fresh) {
-      const sessionCookie = lucia.createSessionCookie(result.session.id);
-      cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-    } else if (!result.session) {
-      const sessionCookie = lucia.createBlankSessionCookie();
-      cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-    }
+      if (result.session?.fresh) {
+        const sessionCookie = lucia.createSessionCookie(result.session.id);
+        cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+      } else if (!result.session) {
+        const sessionCookie = lucia.createBlankSessionCookie();
+        cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+      }
     } catch (err) {
     console.error("Failed to set cookie:", err);
     }
@@ -51,9 +52,13 @@ export const SignInUser = async ( values: z.infer<typeof signInSchema>) => {
     console.log(values);
     const username = values.username;
     const password = values.password;  
-    const [existingUser] = await db.select().from(userTable).where(eq(userTable.username, username)).limit(1);
+    const [existingUser] = await db.
+    select().
+    from(userTable).
+    where(eq(userTable.username, username)).
+    limit(1);
 
-    if (!existingUser || !existingUser.password_hash) {
+    if (!existingUser?.password_hash) {
       return { 
         error: "Username was not found" 
       };
@@ -121,16 +126,20 @@ export const RegisterUser = async ( values: z.infer<typeof signUpSchema>) => {
           userId,
         },
       }
-    } catch (error: any) {
-      if (error.code === "23505" && error.constraint === "project_manager_user_user_agent_unique") {
-          return {
+    }catch (error) {
+        // Check if error is of type DatabaseError
+        if (error instanceof Error && 'code' in error && 'constraint' in error) {
+          const dbError = error as DatabaseError;
+          if (dbError.code === "23505" && dbError.constraint === "project_manager_user_user_agent_unique") {
+            return {
               error: "Username already exists. Please choose a different username."
-          };
+            };
+          }
+        }
+      
+        // Handle other errors
+        return {
+          error: error instanceof Error ? error.message : "An unexpected error occurred.",
+        };
       }
-
-      // Handle other errors
-      return {
-          error: error?.message || "An unexpected error occurred.",
-      };
     }
-  }
