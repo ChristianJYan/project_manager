@@ -43,6 +43,41 @@
       "when": 1719535477220,
       "tag": "0005_dusty_tomas",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1720469606485,
+      "tag": "0006_far_malcolm_colcord",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1720552581628,
+      "tag": "0007_awesome_jane_foster",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1720557687668,
+      "tag": "0008_old_jane_foster",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1720558113934,
+      "tag": "0009_young_mister_sinister",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1720558180213,
+      "tag": "0010_fair_iron_fist",
+      "breakpoints": true
     }
   ]
 }

@@ -5,5 +5,4 @@ CREATE TABLE IF NOT EXISTS " post" (
 	"updatedAt" timestamp with time zone
 );
 --> statement-breakpoint
-DROP TABLE "project_manager_post";--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "name_idx" ON " post" ("name");

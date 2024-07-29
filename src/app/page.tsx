@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
 import { api } from "~/trpc/server";
 import { validateRequest } from "~/app/actions/auth.actions";
 import { SignOutButton } from "~/app/_components/sign-out-button";
+import { Fragment } from "react";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
@@ -26,6 +26,16 @@ export default async function Home() {
           <p className="text-2xl text-white">
             {hello ? hello.greeting : "Loading tRPC query..."}
           </p>
+          {user && (
+            <div className="flex items-center gap-4">
+            <Link href="/teams" className="rounded-full bg-white/10 px-4 py-2 font-semibold transition hover:bg-white/20 text-blue-500">
+              Yours Teams
+            </Link>
+            <Link href="/create-team" className="rounded-full bg-white/10 px-4 py-2 font-semibold transition hover:bg-white/20 text-blue-500">
+              Create a New Team
+            </Link>
+          </div>
+          )}
         </div>
         <div className="fixed top-0 right-0 p-4">
           {user ? (
@@ -39,21 +49,5 @@ export default async function Home() {
 
       </div>
     </main>
-  );
-}
-
-async function CrudShowcase() {
-  const latestPost = await api.post.getLatest();
-
-  return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      <CreatePost />
-    </div>
   );
 }

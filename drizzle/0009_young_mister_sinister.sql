@@ -1,0 +1,1 @@
+ALTER TABLE "project_manager_teams" DROP COLUMN IF EXISTS "description";

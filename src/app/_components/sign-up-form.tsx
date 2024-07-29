@@ -3,14 +3,14 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-import { z } from "zod";
+import { type z } from "zod";
 import { signUpSchema } from "~/app/Types/types";
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RegisterUser } from "../actions/auth.actions";
 
 export function SignUp() {
-  // These are the states for the form and errors
+  // These are the states for the form and errors2
   const router = useRouter();
   const [formError, setErrors] = useState<string[]>([]);
 

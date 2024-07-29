@@ -2,10 +2,8 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
-import pg from "pg";
 import {
   index,
-  pgEnum,
   pgTable,
   pgTableCreator,
   serial,
@@ -13,7 +11,7 @@ import {
   varchar,
   text,
 } from "drizzle-orm/pg-core";
-
+import { UserRoles, TeamRoles } from "~/app/Types/types";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -23,8 +21,6 @@ import {
  */
 
 export const createTable = pgTableCreator((name) => `project_manager_${name}`);
-
-export const UserRoles = pgEnum("UserRoles", ["admin", "user"]);
 
 // First table for the user
 // maybe move some stuff to a different table? 
@@ -55,6 +51,29 @@ export const sessionTable = pgTable(
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
 });
 
+// Teams table
+export const teamsTable = pgTable(
+  "project_manager_teams", 
+  {
+    id: text("id").primaryKey(),
+    name: varchar('name', { length: 128 }).notNull().unique(),
+    description: varchar("description", { length: 128 }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp('updatedAt', { withTimezone: true }),
+  }
+)
+// User team table
+export const userTeamTable = pgTable(
+  "project_manager_user_teams",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull().references(() => userTable.id),
+    teamId: text("team_id").notNull().references(() => teamsTable.id),
+    role: TeamRoles("role").notNull().default("member"),
+  }
+);
 
 // Original table from the template project
 export const posts = createTable(
